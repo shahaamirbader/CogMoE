@@ -1,0 +1,52 @@
+data:
+  csv_path: "ECG_EEG_Gaze_EDA_resampled_features_with_labels_combined.csv"
+  modalities: ["ECG", "EEG", "Gaze", "EDA"]
+  feature_groups:
+    ECG: "_ECG"
+    EEG: "_EEG"
+    Gaze: "_Gaze"
+    EDA: "_EDA"
+  label_col: "Label"
+  participant_col: "participant_ID"
+  timestamp_col: "Timestamp"
+  num_windows: 1              # 1=10s, 2=20s, 3=30s, 4=40s
+  num_folds: 10
+  cv_strategy: "segment_stratified"
+
+model:
+  d_model: 256
+  nhead: 4
+  d_ff: 512
+  num_layers: 2
+  num_experts: 3
+  dropout:
+    ecg: 0.2
+    eeg: 0.2
+    eda: 0.15
+    gaze: 0.1
+  expert_dropout: 0.15
+  use_ecg_channel_attention: true
+
+loss:
+  gamma: 0.75
+  lambda_: 0.6
+  beta_init: 1.0
+  beta_max: 0.2
+  alpha_decay: 0.05
+
+training:
+  optimizer: "adam"
+  lr: 3.0e-4
+  batch_size: 32
+  epochs: 50
+  grad_clip: 1.0
+  early_stopping_patience: 10
+
+augmentation:
+  enabled: true
+  gaussian_noise_std: 0.05
+  temporal_shift_max: 5
+  channel_dropout_prob: 0.1
+
+seed: 42
+save_dir: "outputs/"

@@ -1,0 +1,37 @@
+# Optuna hyperparameter search space for CogMoE
+# Paper Appendix A.2
+
+# Base config to override
+base_config: "configs/default.yaml"
+
+sweep:
+  n_trials: 100
+  direction: "maximize"
+  metric: "accuracy"
+
+  search_space:
+    lr:
+      type: "loguniform"
+      low: 1.0e-4
+      high: 1.0e-3
+    batch_size:
+      type: "categorical"
+      choices: [16, 32, 64]
+    dropout:
+      type: "uniform"
+      low: 0.1
+      high: 0.5
+    nhead:
+      type: "categorical"
+      choices: [2, 4, 8]
+    num_layers:
+      type: "int"
+      low: 2
+      high: 4
+    d_model:
+      type: "categorical"
+      choices: [128, 256, 512]
+    expert_dropout:
+      type: "uniform"
+      low: 0.1
+      high: 0.3
