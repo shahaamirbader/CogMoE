@@ -5,7 +5,10 @@ Official implementation of **CogMoE**, a two-stage framework that combines quali
 > **Paper**: *CogMoE: Leveraging Signal Quality for Cognitive Load Prediction with Multimodal Mixture-of-Experts*
 > ICLR 2026
 
+
 ## Overview
+
+<img width="2016" height="774" alt="Figure_3_v3" src="https://github.com/user-attachments/assets/5865d72c-bca3-4be9-b6c9-a500e5404c51" />
 
 CogMoE addresses the challenge of predicting cognitive load from noisy, incomplete multimodal physiological signals (ECG, EEG, Gaze, EDA). The framework consists of two stages:
 
@@ -29,84 +32,6 @@ Training uses **CORTEX Loss**: cross-entropy + noise suppression + refinement + 
 
 - ~2.27M parameters, 19.9 MB model size, 12.5M FLOPs
 - Expert utilization: ~35% HFE / ~33% NRE / ~32% CRE
-
-## Repository Structure
-
-```
-CogMoE/
-├── README.md
-├── requirements.txt
-├── setup.py
-├── .gitignore
-│
-├── configs/
-│   ├── default.yaml            # Full experiment configuration
-│   └── sweep.yaml              # Optuna hyperparameter search space
-│
-├── cogmoe/                     # Main package
-│   ├── data/
-│   │   ├── dataset.py          # CLDriveDataset, collate_fn, build_dataset
-│   │   ├── augmentation.py     # Gaussian noise, channel dropout, temporal jitter
-│   │   └── cross_validation.py # Segment-stratified and subject-wise k-fold
-│   │
-│   ├── preprocessing/          # Stage 1 pipeline
-│   │   ├── cwt.py              # CWT compute & inverse
-│   │   ├── align.py            # 2D cross-correlation alignment
-│   │   ├── mask.py             # Cross-modal mask generation
-│   │   ├── recover.py          # Low-rank matrix completion
-│   │   ├── feature_extraction.py
-│   │   └── pipeline.py         # End-to-end Stage 1 orchestrator
-│   │
-│   ├── models/                 # Stage 2 architecture
-│   │   ├── encoders.py         # ModalityEncoder + Squeeze-and-Excitation
-│   │   ├── attention.py        # CrossModalFusion + CRE attention
-│   │   ├── experts.py          # HFE, NRE, CRE
-│   │   ├── gating.py           # Dynamic Pathway Gating + MoE FFN
-│   │   ├── transformer.py      # CogMoELayer, CogMoETransformer
-│   │   ├── classification_head.py
-│   │   └── cogmoe.py           # Top-level CogMoE model
-│   │
-│   ├── losses/
-│   │   ├── components.py       # Task, noise, refinement, gate reg losses
-│   │   └── cortex_loss.py      # Full CORTEX loss with adaptive beta
-│   │
-│   ├── baselines/
-│   │   ├── traditional.py      # RF, XGBoost, MLP, KNN
-│   │   ├── deep_learning.py    # VGG, ResNet for feature vectors
-│   │   ├── biot.py             # BIOT biosignal transformer
-│   │   ├── cogbasic.py         # Dense transformer (no MoE)
-│   │   └── modmoe.py           # Modality-based routing MoE
-│   │
-│   └── utils/
-│       ├── quality.py          # SNR, autocorrelation, DPG quality scores
-│       ├── metrics.py          # Accuracy, F1, expert utilization, t-test
-│       ├── reproducibility.py  # Seeds, device, parameter counting
-│       ├── logging.py          # JSON experiment logger
-│       ├── viz.py              # Visualization utilities
-│       ├── io.py               # File I/O helpers
-│       └── resample.py         # Anti-aliased resampling
-│
-├── scripts/
-│   ├── train.py                # Full training with cross-validation
-│   ├── evaluate.py             # Model evaluation and metrics
-│   ├── preprocess.py           # Stage 1 preprocessing pipeline
-│   ├── sweep.py                # Optuna hyperparameter optimization
-│   ├── run_baselines.py        # Run all baseline comparisons
-│   └── ablation.py             # Automated ablation studies
-│
-├── tests/
-│   ├── test_models.py          # Model component unit tests
-│   ├── test_losses.py          # Loss function tests
-│   ├── test_quality.py         # Quality scoring tests
-│   ├── test_preprocessing.py   # Preprocessing pipeline tests
-│   └── test_pipeline.py        # End-to-end integration tests
-│
-└── outputs/                    # (gitignored)
-    ├── checkpoints/
-    ├── logs/
-    ├── results/
-    └── figures/
-```
 
 ## Installation
 
